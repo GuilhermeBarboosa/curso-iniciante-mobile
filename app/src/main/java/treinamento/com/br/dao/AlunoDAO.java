@@ -17,4 +17,7 @@ public class AlunoDAO {
         return new ArrayList<>(alunosList);
     }
 
+    public Aluno findPosition(int posicao) {
+        return alunosList.get(posicao);
+    }
 }

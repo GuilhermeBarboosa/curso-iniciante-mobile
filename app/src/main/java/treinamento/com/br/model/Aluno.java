@@ -2,7 +2,9 @@ package treinamento.com.br.model;
 
 import androidx.annotation.NonNull;
 
-public class Aluno {
+import java.io.Serializable;
+
+public class Aluno implements Serializable {
     private final String nome;
     private final String email;
     private final String telefone;
@@ -28,6 +30,6 @@ public class Aluno {
     @NonNull
     @Override
     public String toString() {
-       return nome;
+        return nome;
     }
 }
