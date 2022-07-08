@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +22,7 @@ public class FormularioAlunoActivity extends AppCompatActivity {
     private EditText emailAluno;
     private EditText telefoneAluno;
     private final AlunoDAO alunoDAO = new AlunoDAO();
+    private Aluno alunoRecebido;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,12 +31,21 @@ public class FormularioAlunoActivity extends AppCompatActivity {
         setTitle(TITULO_APPBAR);
         setCampos();
         configBotaoSalvar();
+        getDados();
 
+
+    }
+
+    private void getDados() {
         Intent dados = getIntent();
-        Aluno alunoRecebido = (Aluno) dados.getSerializableExtra("aluno");
+        if (dados.hasExtra("aluno")) {
+            alunoRecebido = (Aluno) dados.getSerializableExtra("aluno");
             nomeAluno.setText(alunoRecebido.getNome());
             emailAluno.setText(alunoRecebido.getEmail());
             telefoneAluno.setText(alunoRecebido.getTelefone());
+        } else {
+            alunoRecebido = new Aluno();
+        }
     }
 
     private void setCampos() {
@@ -47,24 +59,25 @@ public class FormularioAlunoActivity extends AppCompatActivity {
         botaoSalvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Aluno alunoCriado = createAluno();
-                saveAluno(alunoCriado);
+                createAluno();
+                if (alunoRecebido.isExist()) {
+                    alunoDAO.editaAluno(alunoRecebido);
+                } else {
+                    alunoDAO.create(alunoRecebido);
+                }
+                finish();
             }
         });
     }
 
-    @NonNull
-    private Aluno createAluno() {
+    private void createAluno() {
         String nome = nomeAluno.getText().toString();
         String email = emailAluno.getText().toString();
         String telefone = telefoneAluno.getText().toString();
-        Aluno alunoCriado = new Aluno(nome, email, telefone);
-        return alunoCriado;
-    }
 
-    private void saveAluno(Aluno alunoCriado) {
-        alunoDAO.create(alunoCriado);
-        finish();
+        alunoRecebido.setNome(nome);
+        alunoRecebido.setTelefone(telefone);
+        alunoRecebido.setEmail(email);
     }
 
 }
