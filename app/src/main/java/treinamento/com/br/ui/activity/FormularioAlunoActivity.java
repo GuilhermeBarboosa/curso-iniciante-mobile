@@ -4,11 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +22,7 @@ public class FormularioAlunoActivity extends AppCompatActivity {
     private final AlunoDAO alunoDAO = new AlunoDAO();
     private Aluno alunoRecebido;
 
+    //CRIA A ACTIVITY
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +32,15 @@ public class FormularioAlunoActivity extends AppCompatActivity {
         getDados();
     }
 
+    //CRIA AS REFERENCIAS DO VIEW
+    private void setCampos() {
+        nomeAluno = findViewById(R.id.acitivity_formulario_aluno_nome);
+        emailAluno = findViewById(R.id.acitivity_formulario_aluno_email);
+        telefoneAluno = findViewById(R.id.acitivity_formulario_aluno_telefone);
+    }
+
+    //SE FOR MODIFICACAO E O ALUNO VIER POPULADO, PREENCHE OS DADOS
+    //CASO SEJA NULL VAI APENAS CRIAR UM NOVO ALUNO
     private void getDados() {
         Intent dados = getIntent();
         if (dados.hasExtra("aluno")) {
@@ -47,12 +53,24 @@ public class FormularioAlunoActivity extends AppCompatActivity {
         }
     }
 
-    private void setCampos() {
-        nomeAluno = findViewById(R.id.acitivity_formulario_aluno_nome);
-        emailAluno = findViewById(R.id.acitivity_formulario_aluno_email);
-        telefoneAluno = findViewById(R.id.acitivity_formulario_aluno_telefone);
+    //INFLADOR DE MENU
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_formulario_aluno_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
+    //ESPERANDO CLICAR NO BOTAO SALVAR
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        if(itemId == R.id.activity_formulario_aluno_salvar){
+            finishFormulario();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    //FINALIZA O FORMULARIO E SE O ALUNO EXISTIR ELE SO FAZ O EDIT CASO NAO ELE INSERE NO DAO
     private void finishFormulario() {
         createAluno();
         if (alunoRecebido.isExist()) {
@@ -63,6 +81,7 @@ public class FormularioAlunoActivity extends AppCompatActivity {
         finish();
     }
 
+    //POPULA O ALUNO
     private void createAluno() {
         String nome = nomeAluno.getText().toString();
         String email = emailAluno.getText().toString();
@@ -71,20 +90,5 @@ public class FormularioAlunoActivity extends AppCompatActivity {
         alunoRecebido.setNome(nome);
         alunoRecebido.setTelefone(telefone);
         alunoRecebido.setEmail(email);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_formulario_aluno_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int itemId = item.getItemId();
-        if(itemId == R.id.activity_formulario_aluno_salvar){
-            finishFormulario();
-        }
-        return super.onOptionsItemSelected(item);
     }
 }
