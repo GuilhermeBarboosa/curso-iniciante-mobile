@@ -32,8 +32,6 @@ public class FormularioAlunoActivity extends AppCompatActivity {
         setCampos();
         configBotaoSalvar();
         getDados();
-
-
     }
 
     private void getDados() {

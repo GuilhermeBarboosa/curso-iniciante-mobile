@@ -1,5 +1,7 @@
 package treinamento.com.br.dao;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,5 +38,9 @@ public class AlunoDAO {
 
     public Aluno findPosition(int posicao) {
         return alunosList.get(posicao);
+    }
+
+    public void remove(Aluno alunoEscolhido) {
+        alunosList.remove(alunoEscolhido);
     }
 }
