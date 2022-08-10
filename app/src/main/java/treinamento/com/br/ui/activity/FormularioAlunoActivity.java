@@ -2,6 +2,8 @@ package treinamento.com.br.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,7 +32,6 @@ public class FormularioAlunoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_formulario_aluno);
         setTitle(TITULO_APPBAR);
         setCampos();
-        configBotaoSalvar();
         getDados();
     }
 
@@ -52,20 +53,14 @@ public class FormularioAlunoActivity extends AppCompatActivity {
         telefoneAluno = findViewById(R.id.acitivity_formulario_aluno_telefone);
     }
 
-    private void configBotaoSalvar() {
-        Button botaoSalvar = findViewById(R.id.acitivity_formulario_aluno_botao_salvar);
-        botaoSalvar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createAluno();
-                if (alunoRecebido.isExist()) {
-                    alunoDAO.editaAluno(alunoRecebido);
-                } else {
-                    alunoDAO.create(alunoRecebido);
-                }
-                finish();
-            }
-        });
+    private void finishFormulario() {
+        createAluno();
+        if (alunoRecebido.isExist()) {
+            alunoDAO.editaAluno(alunoRecebido);
+        } else {
+            alunoDAO.create(alunoRecebido);
+        }
+        finish();
     }
 
     private void createAluno() {
@@ -78,4 +73,18 @@ public class FormularioAlunoActivity extends AppCompatActivity {
         alunoRecebido.setEmail(email);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_formulario_aluno_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        if(itemId == R.id.activity_formulario_aluno_salvar){
+            finishFormulario();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
