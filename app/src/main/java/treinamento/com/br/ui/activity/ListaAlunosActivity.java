@@ -3,11 +3,14 @@ package treinamento.com.br.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -16,17 +19,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import treinamento.com.br.R;
 import treinamento.com.br.dao.AlunoDAO;
 import treinamento.com.br.model.Aluno;
+import treinamento.com.br.ui.adapter.ListaAlunosAdapter;
 
 public class ListaAlunosActivity extends AppCompatActivity {
 
     public static final String TITULO_APPBAR = "Lista de alunos";
     private final AlunoDAO alunoDAO = new AlunoDAO();
     private ListView listaAlunos;
-    private ArrayAdapter<Aluno> adapter;
-
+    private ListaAlunosAdapter adapter;
 
     //CRIAR A ACTIVITY
     @Override
@@ -35,10 +41,6 @@ public class ListaAlunosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setTitle(TITULO_APPBAR);
         setContentView(R.layout.activity_lista_alunos);
-
-        alunoDAO.create(new Aluno("Gui", "gui@gmail.com", "34 9999999"));
-        alunoDAO.create(new Aluno("Barbosa", "barbosa@gmail.com", "34 9999999"));
-
         configuraNovoAluno();
         configuraLista();
     }
@@ -67,13 +69,9 @@ public class ListaAlunosActivity extends AppCompatActivity {
         registerForContextMenu(listaAlunos);
     }
 
-    //PEGA TODOS OS ALUNOS E MOSTRA NA LIST VIEW
+    //FAZEMOS UM LAYOUT PROPRIO E COM ISSO VAMOS UTILIZA UM ADPATER UNICA
     private void configuraAdapter(ListView listaDeAlunos) {
-        adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1,
-                alunoDAO.read());
-
+        adapter = new ListaAlunosAdapter(this);
         listaDeAlunos.setAdapter(adapter);
     }
 
@@ -97,8 +95,8 @@ public class ListaAlunosActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        adapter.clear();
-        adapter.addAll(alunoDAO.read());
+        //GUARDA OS METODOS DENTRO DO ATUALIZA
+        adapter.atualiza(alunoDAO.read());
     }
 
     //REMOVE O ALUNO QUANDO CLICADO NO BOTAO DE REMOVER
@@ -126,16 +124,5 @@ public class ListaAlunosActivity extends AppCompatActivity {
         alunoDAO.remove(alunoEscolhido);
         adapter.remove(alunoEscolhido);
     }
-
-
-
-
-
-
-
-
-
-
-
 
 }
